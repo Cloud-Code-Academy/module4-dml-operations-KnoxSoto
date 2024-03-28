@@ -17,7 +17,7 @@
  * The methods within this class serve as practical examples of different DML operations,
  * allowing developers to learn through practice and examples.
  *
- * @author Your Name
+ * @author Knox-nethan Aviles
  */
 
 
@@ -128,13 +128,9 @@ public with sharing class DMLOperations {
      * @param list of Opportunities to be changed then upserted.
      */
     public static void upsertOpportunityList(List<Opportunity> opportunities) {
-        for (Opportunity opp : opportunities) {
-            opp.StageName = 'Qualification';
-            opp.CloseDate = Date.today().addMonths(3);
-            opp.Amount = 50000;
-        }
+      
         // Upsert the opportunities List so that records are either updated or created
-        upsert opportunities;
+        
     }
 
     /**
