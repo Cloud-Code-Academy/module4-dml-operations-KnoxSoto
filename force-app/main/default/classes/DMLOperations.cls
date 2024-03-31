@@ -201,13 +201,25 @@ public with sharing class DMLOperations {
 	public static Account upsertAccount(String accountName) {
 		// Query for the Account
 		List<Account> accounts = [SELECT Id FROM Account WHERE Name = :accountName];
-
+        Account upsertAccount;
 		// if the Account exists, update the description
-
+        if(!accounts.isEmpty()) {  
+           Account existingAccount = accounts[0]; // Finding the existing account in the list by index
+           existingAccount.description = 'Updated Account'; 
+           Update existingAccount;  // Update the existing account into production
+           upsertAccount = existingAccount;
+           
+        }else{
+            Account newAccount = New Account();
+            newAccount.name = accountName;
+            newAccount.description = 'New Account';
+            Insert newAccount; // Insert the new account into production
+            upsertAccount = newAccount;
+        }
 		// otherwise, create a new Account and set the description
-
+          
 		// Upsert the Account
-		return null;
+	      return upsertAccount;
 	}
 
     /**
@@ -220,7 +232,27 @@ public with sharing class DMLOperations {
 	 * @param contactsToUpsert List of Contacts to be upserted and linked to accounts.
 	 */
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
-		// Loop through each Contact
+            
+             
+
+        
+          // Loop through each Contact
+    
+         for(Contact contact : contactsToUpsert) {
+            String lastName = contact.lastName;
+           
+            Account upsertAccount;
+            //Query account with name that equal the last name
+            List<Account> matchingAccounts = [SELECT Id FROM Account WHERE Name =: lastName];
+            if(!matchingAccounts.isEmpty()){  // check if the last name equal the same as the account name
+                upsertAccount = matchingAccounts[0];
+            }else{
+                upsertAccount = new Account(name = lastName); // This will create the Account with same last name as the contact name
+                insert upsertAccount;
+            }
+        
+              }
+         }
 
 		// Extract the Account Name from Contact's LastName
 
